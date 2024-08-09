@@ -9,6 +9,7 @@ function Logout() {
     useAuthStore.setState({ isAuthenticated: false });
     console.log('User login state:', useAuthStore.getState().isAuthenticated);
     navigate('/login');
+    localStorage.removeItem('user');
   };
 
   return (

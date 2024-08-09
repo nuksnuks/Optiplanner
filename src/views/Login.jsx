@@ -4,6 +4,7 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { app, analytics } from '../firebase';
 
 import useAuthStore from '../stores/useAuthStore';
+import CreateUser from '../components/CreateUser';
 
 function Login() {
   const navigate = useNavigate();
@@ -19,10 +20,10 @@ function Login() {
       .then((userCredential) => {
         // Signed in 
         const user = userCredential.user;
-        console.log('User signed in:', user.email);
         useAuthStore.setState({ isAuthenticated: true });
         console.log('User Login state:', useAuthStore.getState().isAuthenticated);
         navigate('/overview');
+        localStorage.setItem('user', login);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -61,6 +62,7 @@ function Login() {
         {error && <p style={{ color: 'red' }}>{error}</p>}
         <button type="submit">Login</button>
       </form>
+      <CreateUser />
     </>
   );
 }
