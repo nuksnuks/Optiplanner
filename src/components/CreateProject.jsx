@@ -10,14 +10,14 @@ const CreateProject = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const user = localStorage.getItem('user');
-
+    console.log('User:', user);
     try {
-      await addDoc(collection(db, 'projects'), {
+      await addDoc(collection(db, user), {
         title: title,
-        user: user
       });
       setTitle('');
       alert('Project created successfully!');
+      window.location.reload();
     } catch (e) {
       console.error('Error adding document: ', e);
     }
@@ -25,7 +25,7 @@ const CreateProject = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
+      <div className='input-field'>
         <label htmlFor="title">Project Title:</label>
         <input
           type="text"

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { app, analytics } from '../firebase';
 
 import useAuthStore from '../stores/useAuthStore';
@@ -33,34 +33,56 @@ function Login() {
       });
   };
 
+  const handleGoogleSignIn = () => {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const user = result.user;
+        useAuthStore.setState({ isAuthenticated: true });
+        console.log('User Login state:', useAuthStore.getState().isAuthenticated);
+        navigate('/overview');
+        localStorage.setItem('user', user.email);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setError(errorMessage);
+        console.error('Error signing in with Google:', errorCode, errorMessage);
+      });
+  };
+
   return (
     <>
       <h1>Optiplanner</h1>
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className='input-field'>
+          <h2>Login</h2>
           <label>
-            Login:
+            E-mail
+          </label>
             <input
               type="text"
               value={login}
               onChange={(e) => setLogin(e.target.value)}
               required
             />
-          </label>
-        </div>
-        <div>
-          <label>
+            <label>
             Password:
+            </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-          </label>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          <div className='button-container'>
+            <button type="submit">Login</button>
+            <button onClick={handleGoogleSignIn}>Login with Google</button>
+            </div>
         </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">Login</button>
       </form>
       <CreateUser />
     </>

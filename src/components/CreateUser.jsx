@@ -56,34 +56,34 @@ function CreateUser() {
 
   return (
     <>
-      <h1>Create Account</h1>
       <form onSubmit={handleEmailSignUp}>
-        <div>
+        <div className='input-field'>
+        <h2>Create Account</h2>
           <label>
             Email:
+          </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-          </label>
-        </div>
-        <div>
           <label>
             Password:
+          </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-          </label>
-        </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">Sign Up</button>
+        <div className='button-container'>
+          <button type="submit">Sign Up</button>
+          <button onClick={handleGoogleSignUp}>Sign Up with Google</button>
+        </div>
+        </div>
       </form>
-      <button onClick={handleGoogleSignUp}>Sign Up with Google</button>
     </>
   );
 }
