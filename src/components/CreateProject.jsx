@@ -6,6 +6,8 @@ const db = getFirestore(app);
 
 const CreateProject = () => {
   const [title, setTitle] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [deadline, setDeadline] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,6 +16,8 @@ const CreateProject = () => {
     try {
       await addDoc(collection(db, user), {
         title: title,
+        startDate: startDate,
+        deadline: deadline,
       });
       setTitle('');
       alert('Project created successfully!');
@@ -24,17 +28,32 @@ const CreateProject = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className='input-field'>
-        <label htmlFor="title">Project Title:</label>
-        <input
-          type="text"
-          id="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-      </div>
+    <form onSubmit={handleSubmit} className='input-field'>
+      <h2>Create New Project</h2>
+      <label htmlFor="title">Project Title:</label>
+      <input
+        type="text"
+        id="title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        required
+      />
+      <label htmlFor="startdate">Start Date:</label>
+      <input
+        type="date"
+        id="startdate"
+        value={startDate}
+        onChange={(e) => setStartDate(e.target.value)}
+        required
+      />
+      <label htmlFor="deadline">Deadline:</label>
+      <input
+        type="date"
+        id="deadline"
+        value={deadline}
+        onChange={(e) => setDeadline(e.target.value)}
+        required
+      />
       <button type="submit">Create Project</button>
     </form>
   );

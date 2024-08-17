@@ -8,7 +8,7 @@ function Logout() {
   const handleLogout = () => {
     useAuthStore.setState({ isAuthenticated: false });
     console.log('User login state:', useAuthStore.getState().isAuthenticated);
-    navigate('/login');
+    navigate('/');
     localStorage.removeItem('user');
   };
 
