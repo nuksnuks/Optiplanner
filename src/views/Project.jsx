@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import TaskForm from '../components/TaskForm';
@@ -7,6 +7,7 @@ import TaskList from '../components/TaskList';
 
 const Project = () => {
   const { projectId } = useParams();
+  const navigate = useNavigate();
 
   const [project, setProject] = useState(null);
   const [isEditing, setIsEditing] = useState({
@@ -54,12 +55,17 @@ const Project = () => {
     }
   };
 
+  const handleBackClick = () => {
+    navigate(-1);
+  };
+
   if (!project) {
     return <div>Loading...</div>;
   }
 
   return (
     <div>
+      <button onClick={handleBackClick}>Back</button>
       <h2>
         Project: {' '}
         {isEditing.title ? (

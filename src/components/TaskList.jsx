@@ -60,32 +60,30 @@ const TaskList = ({ setCategories }) => {
   return (
     <div className='task-board'>
       {['incomplete', 'completed'].map(status => (
-        <>
         <div key={status} className='status-container'>
-            <h2>{status === 'incomplete' ? 'To-Do' : 'Completed Tasks'}</h2>
-            <div className='category-board'>
-              {Object.keys(groupedTasks[status]).map(category => (
-                <div key={category} className='category-container'>
-                  <h3>{category}</h3>
-                  <ul className='task-container'>
-                    {groupedTasks[status][category].map(task => (
-                      <li key={task.id}>
-                        <h4>{task.name}</h4>
-                        <p className='task-description'>{task.description}</p>
-                        <p>{task.createdAt}</p>
-                        <input
-                          type="checkbox"
-                          checked={task.done === "true"}
-                          onChange={() => handleCheckboxChange(task.id, task.done)}
-                        />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                ))}
-            </div>
+          <h2>{status === 'incomplete' ? 'To-Do' : 'Completed Tasks'}</h2>
+          <div className='category-board'>
+            {Object.keys(groupedTasks[status]).map(category => (
+              <div key={category} className='category-container'>
+                <h3>{category}</h3>
+                <ul className='task-container'>
+                  {groupedTasks[status][category].map(task => (
+                    <li key={task.id}>
+                      <h4>{task.name}</h4>
+                      <p className='task-description'>{task.description}</p>
+                      <p>{task.createdAt}</p>
+                      <input
+                        type="checkbox"
+                        checked={task.done === "true"}
+                        onChange={() => handleCheckboxChange(task.id, task.done)}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
-        </>
       ))}
     </div>
   );
