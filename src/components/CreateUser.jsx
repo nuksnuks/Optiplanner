@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendEmailVerification } from 'firebase/auth';
 import { app, analytics } from '../firebase';
+import { FcGoogle } from "react-icons/fc";
 
 import useAuthStore from '../stores/useAuthStore';
 
 function CreateUser() {
   const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [user, setUser] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [message, setMessage] = useState(null);
 
   const handleEmailSignUp = (e) => {
     e.preventDefault();
@@ -17,9 +21,21 @@ function CreateUser() {
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed up 
         const user = userCredential.user;
         console.log('User signed up:', user.email);
+
+        sendEmailVerification(user)
+          .then(() => {
+            setMessage('Verification email sent. Please check your inbox.');
+            console.log('Verification email sent to:', user.email);
+          })
+          .catch((error) => {
+            console.error('Error sending verification email:', error);
+            setError('Error sending verification email. Please try again.');
+          });
+         setUsername(username); 
+        localStorage.setItem('username', username);
+        localStorage.setItem('user', user.email);
         useAuthStore.setState({ isAuthenticated: true });
         console.log('User Login state:', useAuthStore.getState().isAuthenticated);
         navigate('/overview');
@@ -41,7 +57,7 @@ function CreateUser() {
         // Signed in 
         const user = result.user;
         console.log('User signed in with Google:', user.email);
-        localStorage.setItem('user', user.displayName);
+        localStorage.setItem('username', user.displayName);
         useAuthStore.setState({ isAuthenticated: true });
         console.log('User Login state:', useAuthStore.getState().isAuthenticated);
         navigate('/overview');
@@ -58,30 +74,34 @@ function CreateUser() {
     <>
       <form onSubmit={handleEmailSignUp}>
         <div className='input-field'>
-        <h2>Create Account</h2>
-          <label>
-            Email:
-          </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          <label>
-            Password:
-          </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <div className='button-container'>
-          <button type="submit">Sign Up</button>
-          <button onClick={handleGoogleSignUp}>Sign Up with Google</button>
-        </div>
+          <h2>Signup</h2>
+          <label>Username</label>
+          <input
+            type="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          {message && <p style={{ color: 'green' }}>{message}</p>}
+          <div className='button-container'>
+            <button type="submit">Sign Up</button>
+            <button type="button" onClick={handleGoogleSignUp}>Sign Up with Google <FcGoogle /></button>
+          </div>
         </div>
       </form>
     </>

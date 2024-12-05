@@ -1,38 +1,57 @@
-import React, { useState } from 'react';
-import { collection, addDoc } from 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
+import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useParams } from 'react-router-dom';
 
-const TaskForm = ({ fetchTasks, categories }) => {
+const TaskForm = ({ fetchTasks, categories, taskToEdit, setTaskToEdit }) => {
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const [taskCategory, setTaskCategory] = useState('');
   const { projectId } = useParams();
-  const userEmail = localStorage.getItem('user');
+
+  useEffect(() => {
+    if (taskToEdit) {
+      setTaskName(taskToEdit.name);
+      setTaskDescription(taskToEdit.description);
+      setTaskCategory(taskToEdit.category);
+    }
+  }, [taskToEdit]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await addDoc(collection(db, userEmail, projectId, 'tasks'), {
-        name: taskName,
-        description: taskDescription,
-        category: taskCategory,
-        createdAt: new Date(),
-        done: "false",
-      });
+      if (taskToEdit) {
+        // Update existing task
+        const taskDoc = doc(db, 'projects', projectId, 'tasks', taskToEdit.id);
+        await updateDoc(taskDoc, {
+          name: taskName,
+          description: taskDescription,
+          category: taskCategory,
+        });
+        setTaskToEdit(null);
+      } else {
+        // Add new task
+        await addDoc(collection(db, 'projects', projectId, 'tasks'), {
+          name: taskName,
+          description: taskDescription,
+          category: taskCategory,
+          createdAt: new Date(),
+          done: "false",
+        });
+      }
       console.log('Task submitted');
       setTaskName('');
       setTaskDescription('');
       setTaskCategory('');
       fetchTasks(); // Fetch tasks again to update the list
     } catch (error) {
-      console.error('Error adding document: ', error);
+      console.error('Error adding/updating document: ', error);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className='input-field'>
-        <h3>Add new task</h3>
+      <h3>{taskToEdit ? 'Edit task' : 'Add new task'}</h3>
       <label htmlFor="taskName">Task:</label>
       <input
         type="text"
@@ -42,7 +61,7 @@ const TaskForm = ({ fetchTasks, categories }) => {
         required
       />
       <label htmlFor="taskDescription">Description:</label>
-      <input
+      <textarea
         type='text'
         id='taskDescription'
         value={taskDescription}
@@ -66,7 +85,8 @@ const TaskForm = ({ fetchTasks, categories }) => {
           <option key={index} value={category}>{category}</option>
         ))}
       </select>
-      <button type="submit">Add task</button>
+      <button type="submit">{taskToEdit ? 'Update task' : 'Add new task'}</button>
+      {taskToEdit && <button type="button" onClick={() => setTaskToEdit(null)}>Cancel</button>}
     </form>
   );
 };

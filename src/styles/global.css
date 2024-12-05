@@ -3,12 +3,13 @@ html {
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: cornflowerblue;
+    font-family: "Roboto Condensed", sans-serif;
+    background-color: rgb(84, 168, 247);
+    margin: 0px;
 }
 h2, h3 {
-    margin: 0px;
-    padding: 10px 10px 10px 0px; 
+    margin-top: 0;
+    margin-bottom: 0;
 }
 .project-header{
     display: flex;
@@ -30,6 +31,7 @@ h2, h3 {
     gap: 5px;
     background-color: white;
     max-width: 20vw;
+    max-height: min-content;
 }
 
 .button-container {
@@ -40,7 +42,12 @@ h2, h3 {
 
 .task-board {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+
+}
+.allTasks{
+    display: flex;
+    flex-direction: row;
     gap: 10px;
     flex: 1;
 }
@@ -58,7 +65,11 @@ h2, h3 {
     border-radius: 5px;
     border: 1px solid #ccc;
     gap: 10px;
+    width: min(100vw, 90%);
     padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
     white-space: nowrap; /* Prevents the text from wrapping to the next line */
     overflow: hidden;    /* Hides the overflowed text */
     text-overflow: ellipsis;
@@ -71,7 +82,12 @@ h2, h3 {
     border-radius: 5px;
     border: 1px solid #ccc;
     max-width: 20vw;
+    min-width: 20vw;
     
+}
+.tasks-container {
+    margin: 0px 10px; 
+    width: min(100vw, 90%);
 }
 .task-container {
     display: flex;
@@ -82,6 +98,10 @@ h2, h3 {
     overflow: hidden;    
     text-overflow: ellipsis; 
         
+}
+#taskDescription {
+    height: 100px;
+    overflow: scroll;
 }
 
 ul {
@@ -103,3 +123,75 @@ li {
     overflow: hidden;    /* Hides the overflowed text */
     text-overflow: ellipsis; /* Adds an ellipsis (...) at the end of the text */
 }
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    outline: none;
+  }
+  
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+  }
+
+  #editButtons {
+    height:min-content;
+    width: min-content;
+
+  }
+  .edit-button {
+    background-color: white;
+    border-radius: 2px;
+  }
+
+  .horizontal-menu {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  button {
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+
+    background-color: chucknorris;
+  }
+  #email {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+  }
+  .project-container{
+    background-color: white;
+    text-align: center;
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    padding: 10px;
+  }
+  .projects {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+  .project-link {
+    text-decoration: none;
+    color: black;
+  }
+  .overview-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }

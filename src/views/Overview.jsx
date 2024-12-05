@@ -1,53 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
 import Logout from '../components/Logout';
-import CreateProject from '../components/CreateProject';
-import { Link } from 'react-router-dom';
+import ProjectForm from '../components/ProjectForm';
+import DeleteAccount from '../components/DeleteAccount';
+import ProjectList from '../components/ProjectList';
+import CollabList from '../components/ProjectCollabList';
 
 const Overview = () => {
-  const [projects, setProjects] = useState([]);
+  const [username, setUsername] = useState(null);
   const [user, setUser] = useState(null);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   useEffect(() => {
-    const user = localStorage.getItem('user');
-    
+    setUsername(localStorage.getItem('username'));
+    setUser(localStorage.getItem('user'));
 
-    if (user) {
-      setUser(user);
-      const fetchProjects = async () => {
-        try {
-          const querySnapshot = await getDocs(collection(db, user));
-          const projectsList = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
-          setProjects(projectsList);
-        } catch (error) {
-          console.error('Error fetching projects: ', error);
-        }
-      };
-
-      fetchProjects();
-    } else {
-      console.error('No user is currently logged in.');
-    }
   }, []);
+
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible);
+  };
 
   return (
     <>
-      <div>Welcome {user ? user : 'Guest'}</div>
-      <Logout />
-      <CreateProject />
-      <div>
-        <h2>Projects</h2>
-        <ul>
-          {projects.map(project => (
-            <li key={project.id}>
-              <Link to={`./${project.id}`}>{project.title}</Link>
-            </li>
-          ))}
-        </ul>
+      <div onClick={toggleMenu} style={{ cursor: 'pointer' }}>
+        <h4>Welcome {username ? username : 'Guest'}</h4>
+      </div>
+      {menuVisible && (
+        <div className="horizontal-menu">
+          <Logout />
+          <DeleteAccount />
+        </div>
+      )}
+      <div className='overview-container'>
+        <ProjectForm />
+        <div className='overview-title'>
+        <ProjectList user={user} />
+        <CollabList user={user} />
+        </div>
       </div>
     </>
   );

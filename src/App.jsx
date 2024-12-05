@@ -11,10 +11,22 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/overview" element={isAuthenticated ? <Overview /> : <Navigate to="/login" />} />
-        <Route path="*" element={<Navigate to={isAuthenticated ? "/overview" : "/login"} />} />
-        <Route path="/overview/:projectId" element={<Project/>} />
+        <Route 
+          path="/login" 
+          element={<Login />} 
+        />
+        <Route 
+          path="/overview" 
+          element={isAuthenticated ? <Overview /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="*" 
+          element={<Navigate to={isAuthenticated ? "/overview" : "/login"} />} 
+        />
+        <Route 
+          path="/overview/:projectId" 
+          element={<Project/>} 
+        />
       </Routes>
     </Router>
   );

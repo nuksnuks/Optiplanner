@@ -4,7 +4,7 @@ import { app } from '../firebase.js';
 
 const db = getFirestore(app);
 
-const CreateProject = () => {
+const ProjectForm = () => {
   const [title, setTitle] = useState('');
   const [startDate, setStartDate] = useState('');
   const [deadline, setDeadline] = useState('');
@@ -14,16 +14,18 @@ const CreateProject = () => {
     const user = localStorage.getItem('user');
     console.log('User:', user);
     try {
-      await addDoc(collection(db, user), {
+      await addDoc(collection(db, 'projects'), {
         title: title,
         startDate: startDate,
         deadline: deadline,
+        owner: user,
       });
       setTitle('');
       alert('Project created successfully!');
-      window.location.reload();
     } catch (e) {
       console.error('Error adding document: ', e);
+    } finally {
+      window.location.reload();
     }
   };
 
@@ -59,4 +61,4 @@ const CreateProject = () => {
   );
 };
 
-export default CreateProject;
+export default ProjectForm;
