@@ -3,7 +3,7 @@ import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useParams } from 'react-router-dom';
 
-const TaskForm = ({ fetchTasks, categories, taskToEdit, setTaskToEdit }) => {
+const TaskForm = ({ fetchTasks, categories, taskToEdit, setTaskToEdit, setCategoryOrder }) => {
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const [taskCategory, setTaskCategory] = useState('');
@@ -16,6 +16,18 @@ const TaskForm = ({ fetchTasks, categories, taskToEdit, setTaskToEdit }) => {
       setTaskCategory(taskToEdit.category);
     }
   }, [taskToEdit]);
+
+  const handleDescriptionChange = (e) => {
+    setTaskDescription(e.target.value);
+  };
+
+  const handleDescriptionKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      setTaskDescription((prev) => prev + '\n');
+    }
+    console.log('Key pressed:', JSON.stringify(taskDescription));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,6 +50,16 @@ const TaskForm = ({ fetchTasks, categories, taskToEdit, setTaskToEdit }) => {
           createdAt: new Date(),
           done: "false",
         });
+
+        // Add new category to categoryOrder if it doesn't exist
+        if (!categories.includes(taskCategory)) {
+          const newCategoryOrder = [...categories, taskCategory];
+          setCategoryOrder(newCategoryOrder);
+
+          // Save the new category order to Firestore
+          const projectDoc = doc(db, 'projects', projectId);
+          await updateDoc(projectDoc, { categoryOrder: newCategoryOrder });
+        }
       }
       console.log('Task submitted');
       setTaskName('');
@@ -65,7 +87,8 @@ const TaskForm = ({ fetchTasks, categories, taskToEdit, setTaskToEdit }) => {
         type='text'
         id='taskDescription'
         value={taskDescription}
-        onChange={(e) => setTaskDescription(e.target.value)}
+        onChange={handleDescriptionChange}
+        onKeyDown={handleDescriptionKeyDown}
       />
       <label htmlFor="taskCategory">Category:</label>
       <input

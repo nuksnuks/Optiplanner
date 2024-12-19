@@ -4,6 +4,7 @@ import ProjectForm from '../components/ProjectForm';
 import DeleteAccount from '../components/DeleteAccount';
 import ProjectList from '../components/ProjectList';
 import CollabList from '../components/ProjectCollabList';
+import AcceptInvite from '../components/AcceptInvite';
 
 const Overview = () => {
   const [username, setUsername] = useState(null);
@@ -35,6 +36,7 @@ const Overview = () => {
         <ProjectForm />
         <div className='overview-title'>
         <ProjectList user={user} />
+        <AcceptInvite userEmail={user} />
         <CollabList user={user} />
         </div>
       </div>

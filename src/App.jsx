@@ -4,6 +4,7 @@ import useAuthStore from './stores/useAuthStore'; // Adjust the path as necessar
 import Login from './views/Login';
 import Overview from './views/Overview'; // Adjust the path as necessary
 import Project from './views/Project'; // Adjust the path as necessary
+import TaskFlow from './views/TaskFlow';
 
 function App() {
   const { isAuthenticated } = useAuthStore();
@@ -26,6 +27,10 @@ function App() {
         <Route 
           path="/overview/:projectId" 
           element={<Project/>} 
+        />
+        <Route
+          path="/overview/:projectId/taskflow"
+          element={<TaskFlow/>}
         />
       </Routes>
     </Router>

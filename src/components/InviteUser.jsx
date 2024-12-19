@@ -13,7 +13,7 @@ const InviteUser = ({ projectId, user }) => {
     try {
       const projectDoc = doc(db, 'projects', projectId);
       await updateDoc(projectDoc, {
-        collaborators: arrayUnion(email)
+        pending: arrayUnion(email)
       });
       setMessage(`User ${email} has been invited.`);
       setEmail('');

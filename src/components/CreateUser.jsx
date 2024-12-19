@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendEmailVerification } from 'firebase/auth';
-import { app, analytics } from '../firebase';
+import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendEmailVerification, updateProfile } from 'firebase/auth';
 import { FcGoogle } from "react-icons/fc";
 
 import useAuthStore from '../stores/useAuthStore';
@@ -9,7 +8,6 @@ import useAuthStore from '../stores/useAuthStore';
 function CreateUser() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
-  const [user, setUser] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -24,21 +22,31 @@ function CreateUser() {
         const user = userCredential.user;
         console.log('User signed up:', user.email);
 
-        sendEmailVerification(user)
-          .then(() => {
-            setMessage('Verification email sent. Please check your inbox.');
-            console.log('Verification email sent to:', user.email);
-          })
-          .catch((error) => {
-            console.error('Error sending verification email:', error);
-            setError('Error sending verification email. Please try again.');
-          });
-         setUsername(username); 
-        localStorage.setItem('username', username);
-        localStorage.setItem('user', user.email);
-        useAuthStore.setState({ isAuthenticated: true });
-        console.log('User Login state:', useAuthStore.getState().isAuthenticated);
-        navigate('/overview');
+        // Update the user's profile with the username
+        updateProfile(user, {
+          displayName: username
+        }).then(() => {
+          console.log('Username set:', username);
+
+          sendEmailVerification(user)
+            .then(() => {
+              setMessage('Verification email sent. Please check your inbox.');
+              console.log('Verification email sent to:', user.email);
+            })
+            .catch((error) => {
+              console.error('Error sending verification email:', error);
+              setError('Error sending verification email. Please try again.');
+            });
+
+          localStorage.setItem('username', username);
+          localStorage.setItem('user', user.email);
+          useAuthStore.setState({ isAuthenticated: true });
+          console.log('User Login state:', useAuthStore.getState().isAuthenticated);
+          navigate('/overview');
+        }).catch((error) => {
+          console.error('Error setting username:', error);
+          setError('Error setting username. Please try again.');
+        });
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -58,6 +66,7 @@ function CreateUser() {
         const user = result.user;
         console.log('User signed in with Google:', user.email);
         localStorage.setItem('username', user.displayName);
+        localStorage.setItem('user', user.email);
         useAuthStore.setState({ isAuthenticated: true });
         console.log('User Login state:', useAuthStore.getState().isAuthenticated);
         navigate('/overview');
@@ -77,7 +86,7 @@ function CreateUser() {
           <h2>Signup</h2>
           <label>Username</label>
           <input
-            type="username"
+            type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required

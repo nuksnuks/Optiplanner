@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import TaskList from '../components/TaskList';
 import DeleteProject from '../components/DeleteProject';
 import InviteUser from '../components/InviteUser';
 import LeaveProject from '../components/LeaveProject';
+import EditableField from '../components/EditableField';
 import BurndownChart from '../components/BurndownChart';
 import { IoMdArrowBack } from "react-icons/io";
 
 const Project = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
+  console.log(projectId);
 
   const [project, setProject] = useState(null);
   const [isEditing, setIsEditing] = useState({
@@ -74,58 +76,44 @@ const Project = () => {
 
   return (
     <div>
-      <button onClick={handleBackClick}><IoMdArrowBack /></button>
-      <h2>
-        Project: {' '}
-        {isEditing.title ? (
-          <input
-            type="text"
-            name="title"
-            value={project.title}
-            onChange={handleChange}
-            onBlur={() => handleBlur('title')}
-            autoFocus
-          />
-        ) : (
-          <span onClick={() => handleEdit('title')}>{project.title}</span>
-        )}
-      </h2>
-      <h3>
-        Period: {' '}
-        {isEditing.startDate ? (
-          <input
-            type="date"
-            name="startDate"
-            value={project.startDate}
-            onChange={handleChange}
-            onBlur={() => handleBlur('startDate')}
-            autoFocus
-          />
-        ) : (
-          <span onClick={() => handleEdit('startDate')}>{project.startDate}</span>
-        )}
-        {' - '}
-        {isEditing.deadline ? (
-          <input
-            type="date"
-            name="deadline"
-            value={project.deadline}
-            onChange={handleChange}
-            onBlur={() => handleBlur('deadline')}
-            autoFocus
-          />
-        ) : (
-          <span onClick={() => handleEdit('deadline')}>{project.deadline}</span>
-        )}
-      </h3> 
+      <button onClick={handleBackClick}>
+        <IoMdArrowBack />
+      </button>
+
+      <Link to={`./taskflow`}>
+        Project Taskflow
+      </Link>
+
+      <EditableField
+        projectId={projectId}
+        field="title"
+        value={project.title}
+        label="Project"
+      />
+      <EditableField
+        projectId={projectId}
+        field="startDate"
+        value={project.startDate}
+        label="Start Date"
+      />
+      <EditableField
+        projectId={projectId}
+        field="deadline"
+        value={project.deadline}
+        label="Deadline"
+      />
       <InviteUser projectId={projectId} user={user} />
       {project.owner === user ? (
         <DeleteProject />
       ) : project.collaborators.includes(user) ? (
         <LeaveProject projectId={projectId} user={user} />
       ) : null}
-      <TaskList setCategories={setCategories} />
-      <BurndownChart projectId={projectId} />
+      <TaskList 
+        setCategories={setCategories} 
+        startDate={project.startDate} 
+        deadline={project.deadline} 
+      />
+      
     </div>
   );
 };

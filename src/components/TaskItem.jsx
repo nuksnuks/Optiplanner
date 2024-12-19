@@ -23,6 +23,15 @@ const TaskItem = ({ task, handleCheckboxChange, handleDeleteTask, fetchTasks, ca
     setIsModalOpen(false);
   };
 
+  const formatDescription = (description) => {
+    return description.split('\n').map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        <br />
+      </React.Fragment>
+    ));
+  };
+
   return (
     <>
       {isEditing ? (
@@ -33,16 +42,16 @@ const TaskItem = ({ task, handleCheckboxChange, handleDeleteTask, fetchTasks, ca
           setTaskToEdit={handleCancelEdit}
         />
       ) : (
-        <>
-          <div onClick={handleTaskClick} style={{ cursor: 'pointer' }}>
+        <div className="task">
+          <div onClick={handleTaskClick} >
             <h4>{task.name}</h4>
-            <p className='task-description'>{task.description}</p>
-            <p>{task.createdAt}</p>
+            <p className='task-description'>{formatDescription(task.description)}</p>
           </div>
 
-          <div>
+          <div className="task-controls">
             <input
               type="checkbox"
+              className='edit-button'
               id="editButtons"
               checked={task.done === "true"}
               onChange={() => handleCheckboxChange(task.id, task.done)}
@@ -62,12 +71,14 @@ const TaskItem = ({ task, handleCheckboxChange, handleDeleteTask, fetchTasks, ca
               <BsTrash3 />
             </button>
           </div>
-        </>
+        </div>
       )}
       <TaskModal
         isOpen={isModalOpen}
         onRequestClose={handleModalClose}
         task={task}
+        formattedDescription={formatDescription(task.description)}
+        refreshTasks={fetchTasks} // Pass the fetchTasks function to refresh the tasks
       />
     </>
   );

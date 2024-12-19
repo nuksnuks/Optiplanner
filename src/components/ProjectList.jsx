@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 const ProjectList = ({ user }) => {
   const [projects, setProjects] = useState([]);
+  const [projectId, setProjectId] = useState('');
 
   useEffect(() => {
     const fetchProjects = async () => {

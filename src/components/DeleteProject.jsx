@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { doc, deleteDoc } from 'firebase/firestore';
+import { doc, deleteDoc, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import { FaTrashCan } from "react-icons/fa6";
 
@@ -17,8 +17,8 @@ const DeleteProject = () => {
 
     try {
       const projectDoc = doc(db, 'projects', projectId);
-      await deleteDoc(projectDoc);
-      navigate(-1); // Navigate back to the previous page
+      await deleteDoc(projectDoc, where('owner', '==', user));
+      navigate('/'); // Navigate back to root
     } catch (error) {
       console.error('Error deleting project: ', error);
     }

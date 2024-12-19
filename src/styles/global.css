@@ -4,12 +4,13 @@ html {
 
 body {
     font-family: "Roboto Condensed", sans-serif;
-    background-color: rgb(84, 168, 247);
+    background-color: rgb(34, 34, 34);
     margin: 0px;
 }
 h2, h3 {
     margin-top: 0;
     margin-bottom: 0;
+    color: white;
 }
 .project-header{
     display: flex;
@@ -34,6 +35,12 @@ h2, h3 {
     max-height: min-content;
 }
 
+.input-field h2,
+.input-field h3,
+.input-field h4 {
+  color: black;
+}
+
 .button-container {
     display: flex;
     justify-content: left;
@@ -53,11 +60,20 @@ h2, h3 {
 }
 .category-board {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 10px;
-    flex: 1;
+
 }
 
+.category-board h2 {
+  color: white;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: row;
+  gap:10px;
+}
 .status-container {
     display: flex;
     flex-direction: column;
@@ -71,21 +87,32 @@ h2, h3 {
     padding-bottom: 10px;
     margin-bottom: 10px;
     white-space: nowrap; /* Prevents the text from wrapping to the next line */
-    overflow: hidden;    /* Hides the overflowed text */
+    overflow-x: scroll;    /* Hides the overflowed text */
     text-overflow: ellipsis;
+}
+.category-lists{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.status-container h2, h3, h4 {
+    color: black;
+    margin: 0px;
 }
 
 .category-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    max-width: 20vw;
-    min-width: 20vw;
+    
     
 }
 .tasks-container {
+    display: flex;
+    flex-direction: column;
     margin: 0px 10px; 
     width: min(100vw, 90%);
 }
@@ -93,11 +120,16 @@ h2, h3 {
     display: flex;
     flex-direction: column;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    
     white-space: nowrap; 
     overflow: hidden;    
     text-overflow: ellipsis; 
+    max-width: 20vh;
         
+}
+.task-controls {
+  display: flex;
+  flex-direction: row;
 }
 #taskDescription {
     height: 100px;
@@ -118,11 +150,23 @@ li {
     text-overflow: ellipsis;
 }
 
-.task-description {
-    white-space: nowrap; /* Prevents the text from wrapping to the next line */
-    overflow: hidden;    /* Hides the overflowed text */
-    text-overflow: ellipsis; /* Adds an ellipsis (...) at the end of the text */
+.task {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1px solid #343434;
+  border-radius: 10px;
+  max-height: 100px;
+  padding: 5px;
+  margin-bottom: 10px;
 }
+
+.task-description {
+  max-height: 2vh;
+  white-space: nowrap; /* Prevents the text from wrapping to the next line */
+  overflow: hidden;    /* Hides the overflowed text */
+  text-overflow: ellipsis; /* Adds an ellipsis (...) at the end of the text */
+}
+
 .modal {
     position: absolute;
     top: 50%;
@@ -136,6 +180,10 @@ li {
     border-radius: 8px;
     outline: none;
   }
+
+  .modal h2 {
+    color:black;
+  }
   
   .overlay {
     position: fixed;
@@ -146,9 +194,8 @@ li {
     background-color: rgba(0, 0, 0, 0.75);
   }
 
-  #editButtons {
-    height:min-content;
-    width: min-content;
+  #edit-buttons {
+    
 
   }
   .edit-button {
@@ -194,4 +241,17 @@ li {
     display: flex;
     flex-direction: row;
     gap: 10px;
+  }
+  .taskflow-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .taskform-container {
+    margin: 10px;
+  }
+  
+  .reactflow-container {
+    flex-grow: 1;
+    position: relative;
   }

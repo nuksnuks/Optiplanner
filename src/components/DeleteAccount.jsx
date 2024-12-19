@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, deleteUser } from 'firebase/auth';
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, query, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import { FiUserX } from "react-icons/fi";
 
@@ -18,9 +18,10 @@ const DeleteAccount = () => {
     }
 
     try {
-      // Delete all project data
-      const projectsCollection = collection(db, userEmail);
-      const projectsSnapshot = await getDocs(projectsCollection);
+      // Delete all project data where the user is the owner
+      const projectsCollection = collection(db, 'projects');
+      const q = query(projectsCollection, where('owner', '==', userEmail));
+      const projectsSnapshot = await getDocs(q);
       const deletePromises = projectsSnapshot.docs.map(doc => deleteDoc(doc.ref));
       await Promise.all(deletePromises);
 
@@ -32,7 +33,9 @@ const DeleteAccount = () => {
       // Clear local storage and navigate to home
       localStorage.removeItem('user');
       setMessage('Account and all associated data have been deleted.');
-      navigate('/');
+      
+      // Navigate to the root URL
+      navigate('/login');
 
     } catch (error) {
       console.error('Error deleting account: ', error);
