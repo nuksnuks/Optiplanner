@@ -78,8 +78,8 @@ const LoginForm = () => {
         {error && <p style={{ color: 'red' }}>{error}</p>}
         <div className='button-container'>
           <button type="submit">Login</button>
+          <button type="button" onClick={handleGoogleSignIn}>Login <FcGoogle /></button>
         </div>
-        <button type="button" onClick={handleGoogleSignIn}>Login with Google <FcGoogle /></button>
       </div>
     </form>
   );

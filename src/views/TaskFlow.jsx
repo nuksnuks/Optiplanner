@@ -96,7 +96,15 @@ const TaskFlow = () => {
                 taskNodes.push({
                   id: task.id,
                   type: 'custom', // Use the custom node type
-                  data: { label: task.name, desc: task.description, done: task.done, category: category },
+                  data: {
+                    label: task.name,
+                    desc: task.description,
+                    done: task.done,
+                    category: category,
+                    earliestCompletion: task.earliestCompletion,
+                    latestCompletion: task.latestCompletion,
+                    completionTime: task.completionTime,
+                  },
                   position: { x: xOffset, y: rowIndex * yOffsetIncrement + 50 }, // Adjust y position to leave space for the label
                 });
               });
@@ -219,19 +227,14 @@ const TaskFlow = () => {
     [onNodesChange, nodes]
   );
 
-  const resetLayout = () => {
-    fetchTasks();
-  };
-
   return (
     <>
-      <button onClick={handleBackClick}>
-        <IoMdArrowBack />
-      </button>
-      <button onClick={resetLayout}>Reset Layout</button>
       
       <div className="taskflow-container">
         <div className="taskform-container">
+          <button onClick={handleBackClick} className="back-btn">
+            <IoMdArrowBack />
+          </button>
           <TaskForm
             fetchTasks={fetchTasks}
             categories={categories}

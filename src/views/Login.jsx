@@ -1,13 +1,15 @@
 import React from 'react';
 import LoginForm from '../components/LoginForm';
-import CreateUser from '../components/CreateUser';
+import SignUp from '../components/SignUp';
 
 function Login() {
   return (
     <>
-      <h1>Optiplanner</h1>
-      <LoginForm />
-      <CreateUser />
+      <div className="login">
+        <h1>Optiplanner</h1>
+        <LoginForm />
+        <SignUp />
+      </div>
     </>
   );
 }

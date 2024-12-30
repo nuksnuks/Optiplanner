@@ -36,16 +36,16 @@ const InviteUser = ({ projectId, user }) => {
 
   return (
     <div>
-      <form onSubmit={handleInvite}>
+      <form onSubmit={handleInvite} className="invite-form">
         <input
           id="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter user's email"
+          placeholder="Enter email address"
           required
         />
-        <button type="submit">Invite <IoPersonAdd /></button>
+        <button type="submit"> <IoPersonAdd /></button>
       </form>
       {message && <p style={{ color: 'green' }}>{message}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}

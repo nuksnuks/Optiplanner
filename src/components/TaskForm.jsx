@@ -3,7 +3,7 @@ import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useParams } from 'react-router-dom';
 
-const TaskForm = ({ fetchTasks, categories, taskToEdit, setTaskToEdit, setCategoryOrder }) => {
+const TaskForm = ({ fetchTasks, categories = [], taskToEdit, setTaskToEdit, setCategoryOrder }) => {
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const [taskCategory, setTaskCategory] = useState('');
@@ -66,6 +66,7 @@ const TaskForm = ({ fetchTasks, categories, taskToEdit, setTaskToEdit, setCatego
       setTaskDescription('');
       setTaskCategory('');
       fetchTasks(); // Fetch tasks again to update the list
+      location.reload();
     } catch (error) {
       console.error('Error adding/updating document: ', error);
     }
@@ -108,7 +109,7 @@ const TaskForm = ({ fetchTasks, categories, taskToEdit, setTaskToEdit, setCatego
           <option key={index} value={category}>{category}</option>
         ))}
       </select>
-      <button type="submit">{taskToEdit ? 'Update task' : 'Add new task'}</button>
+      <button type="submit" className="add-btn">{taskToEdit ? 'Update task' : 'Add new task'}</button>
       {taskToEdit && <button type="button" onClick={() => setTaskToEdit(null)}>Cancel</button>}
     </form>
   );

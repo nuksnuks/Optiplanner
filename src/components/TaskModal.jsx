@@ -5,7 +5,7 @@ import { db } from '../firebase';
 
 Modal.setAppElement('#root'); // Make sure to set the app element for accessibility
 
-const TaskModal = ({ isOpen, onRequestClose, task, formattedDescription, refreshTasks }) => {
+const TaskModal = ({ isOpen, onRequestClose, task, refreshTasks }) => {
   if (!task) return null;
 
   const handleCheckboxChange = async () => {
@@ -31,9 +31,12 @@ const TaskModal = ({ isOpen, onRequestClose, task, formattedDescription, refresh
       overlayClassName="overlay"
     >
       <h2>{task.name}</h2>
-      <p><strong>Description:</strong> {formattedDescription ? formattedDescription : task.description}</p>
+      <p>
+        <strong>Description:</strong> 
+        <br/> 
+        {task.description}
+      </p>
       <p><strong>Category:</strong> {task.category}</p>
-      <p><strong>Created At:</strong> {task.createdAt}</p>
       <p><strong>Status:</strong> {task.done === "true" ? "Completed" : "Incomplete"}</p>
       <label>
         {task.done === "true" ? "Incomplete" : "Completed"}

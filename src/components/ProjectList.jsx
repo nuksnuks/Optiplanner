@@ -43,16 +43,16 @@ const ProjectList = ({ user }) => {
       <h2>My projects</h2>
       <div className='projects'>
         {projects.map(project => (
-          <div key={project.id} className="project-container">
-            <Link to={`./${project.id}`} className='project-link'>
+          <Link to={`./${project.id}`} className='project-link'>
+            <div key={project.id} className="project-container">
               <p>
                 {project.completionPercentage}%
               </p>
               <p>
                 {project.title}
               </p>
-            </Link>
-          </div>
+            </div>
+          </Link>
         ))}
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { BsPencil } from "react-icons/bs";
 
 const EditableField = ({ projectId, field, value, label }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -26,8 +27,8 @@ const EditableField = ({ projectId, field, value, label }) => {
 
   return (
     <div>
-      <h2>
-        {label}: {' '}
+      <h4>
+      <strong>{label}</strong> {' '}
         {isEditing ? (
           <input
             type={field === 'startDate' || field === 'deadline' ? 'date' : 'text'}
@@ -38,9 +39,9 @@ const EditableField = ({ projectId, field, value, label }) => {
             autoFocus
           />
         ) : (
-          <span onClick={handleEdit}>{fieldValue}</span>
+          <span onClick={handleEdit}>{fieldValue} <BsPencil /></span>
         )}
-      </h2>
+      </h4>
     </div>
   );
 };

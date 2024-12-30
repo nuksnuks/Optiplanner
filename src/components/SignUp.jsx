@@ -5,7 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 
 import useAuthStore from '../stores/useAuthStore';
 
-function CreateUser() {
+function SignUp() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -109,7 +109,7 @@ function CreateUser() {
           {message && <p style={{ color: 'green' }}>{message}</p>}
           <div className='button-container'>
             <button type="submit">Sign Up</button>
-            <button type="button" onClick={handleGoogleSignUp}>Sign Up with Google <FcGoogle /></button>
+            <button type="button" onClick={handleGoogleSignUp}>Sign Up <FcGoogle /></button>
           </div>
         </div>
       </form>
@@ -117,4 +117,4 @@ function CreateUser() {
   );
 }
 
-export default CreateUser;
+export default SignUp;

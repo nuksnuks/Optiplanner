@@ -24,7 +24,9 @@ const Overview = () => {
   return (
     <>
       <div onClick={toggleMenu} style={{ cursor: 'pointer' }}>
-        <h4>Welcome {username ? username : 'Guest'}</h4>
+        <h2>
+          Welcome {username ? username : 'Guest'}
+        </h2>
       </div>
       {menuVisible && (
         <div className="horizontal-menu">

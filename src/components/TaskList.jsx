@@ -3,13 +3,11 @@ import { collection, getDocs, doc, updateDoc, deleteDoc, getDoc } from 'firebase
 import { db } from '../firebase';
 import { useParams } from 'react-router-dom';
 import TaskItem from './TaskItem';
-import TaskForm from './TaskForm';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '' }) => {
+const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '', setTaskToEdit, setCategoryOrder, categories = [] }) => {
   const [tasks, setTasks] = useState([]);
-  const [taskToEdit, setTaskToEdit] = useState(null);
-  const [categoryOrder, setCategoryOrder] = useState([]);
+  const [categoryOrder, setCategoryOrderState] = useState([]);
   const { projectId } = useParams();
   const userEmail = localStorage.getItem('user');
   const [sprintDates, setSprintDates] = useState([]);
@@ -49,13 +47,17 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '' }) =
           const uniqueCategories = [...new Set(tasksList.map(task => task.category))];
           setCategories(uniqueCategories);
 
-          // Set initial category order
-          const initialCategoryOrder = projectData.categoryOrder || uniqueCategories;
+          // Initialize category order from Firestore or unique categories
+          let initialCategoryOrder = projectData.categoryOrder || uniqueCategories;
+          initialCategoryOrder = initialCategoryOrder.filter(category => 
+            tasksList.some(task => task.category === category)
+          );
+          setCategoryOrderState(initialCategoryOrder);
           setCategoryOrder(initialCategoryOrder);
 
           // Calculate project period
-          const start = new Date(startDate);
-          const end = new Date(deadline);
+          const start = new Date(startDate.split('/').reverse().join('-'));
+          const end = new Date(deadline.split('/').reverse().join('-'));
           console.log('Start Date:', start);
           console.log('Deadline:', end);
 
@@ -89,8 +91,9 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '' }) =
           // Calculate estimated task completion time for each category
           const taskCompletionTimes = {};
           initialCategoryOrder.forEach(category => {
-            const incompleteTasksInCategory = tasksList.filter(task => task.category === category && task.done !== "true").length;
-            let completionTime = sprintPeriod / incompleteTasksInCategory;
+            const tasksInCategory = tasksList.filter(task => task.category === category);
+            const incompleteTasksInCategory = tasksInCategory.filter(task => task.done !== "true").length;
+            let completionTime = sprintPeriod / tasksInCategory.length;
             if (completionTime % 1 !== 0) {
               completionTime = (completionTime * 24).toFixed(2) + ' hours';
               if (parseFloat(completionTime) > 24) {
@@ -104,6 +107,36 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '' }) =
 
           setTaskCompletionTimes(taskCompletionTimes);
           console.log('Task Completion Times:', taskCompletionTimes);
+
+          // Calculate earliest and latest completion times for each task
+          const tasksWithCompletionTimes = tasksList.map(task => {
+            const categoryIndex = initialCategoryOrder.indexOf(task.category);
+            const sprintStartDate = new Date(start);
+            sprintStartDate.setDate(start.getDate() + categoryIndex * sprintPeriod);
+            const sprintEndDate = new Date(sprintStartDate);
+            sprintEndDate.setDate(sprintEndDate.getDate() + sprintPeriod - 1);
+            return {
+              ...task,
+              earliestCompletion: sprintStartDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' }),
+              latestCompletion: sprintEndDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' }),
+              completionTime: taskCompletionTimes[task.category]
+            };
+          });
+
+          setTasks(tasksWithCompletionTimes);
+
+          // Store task completion times and sprint periods in Firestore
+          await updateDoc(projectDoc, { taskCompletionTimes, sprintPeriods: sprintDates, categoryOrder: initialCategoryOrder });
+
+          // Update each task document with completion times
+          for (const task of tasksWithCompletionTimes) {
+            const taskDoc = doc(db, 'projects', projectId, 'tasks', task.id);
+            await updateDoc(taskDoc, {
+              earliestCompletion: task.earliestCompletion,
+              latestCompletion: task.latestCompletion,
+              completionTime: task.completionTime
+            });
+          }
         } else {
           console.log('User is not a collaborator on this project.');
         }
@@ -115,10 +148,30 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '' }) =
     }
   };
 
+  const watchTasksAndCategories = () => {
+    const updatedCategoryOrder = categoryOrder.filter(category => 
+      tasks.some(task => task.category === category)
+    );
+
+    if (updatedCategoryOrder.length !== categoryOrder.length) {
+      setCategoryOrderState(updatedCategoryOrder);
+
+      // Save the updated category order to Firestore
+      const projectDoc = doc(db, 'projects', projectId);
+      updateDoc(projectDoc, { categoryOrder: updatedCategoryOrder })
+        .then(() => console.log('Category order updated in Firestore'))
+        .catch(error => console.error('Error updating category order: ', error));
+    }
+  };
+
   useEffect(() => {
     fetchTasks();
     console.log('Fetching tasks...', userEmail);
   }, [projectId, userEmail]);
+
+  useEffect(() => {
+    watchTasksAndCategories();
+  }, [tasks, categories]);
 
   const handleCheckboxChange = async (taskId, currentStatus) => {
     try {
@@ -152,12 +205,13 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '' }) =
   };
 
   const handleDragEnd = async (result) => {
-    if (!result.destination) return;
+    if (!result.destination || result.source.droppableId !== 'incomplete-categories') return;
 
     const newCategoryOrder = Array.from(categoryOrder);
     const [movedCategory] = newCategoryOrder.splice(result.source.index, 1);
     newCategoryOrder.splice(result.destination.index, 0, movedCategory);
 
+    setCategoryOrderState(newCategoryOrder);
     setCategoryOrder(newCategoryOrder);
 
     // Save the new category order to Firestore
@@ -166,8 +220,8 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '' }) =
       await updateDoc(projectDoc, { categoryOrder: newCategoryOrder });
 
       // Recalculate sprint dates after reordering categories
-      const start = new Date(startDate);
-      const sprintPeriod = (new Date(deadline) - start) / (1000 * 60 * 60 * 24) / newCategoryOrder.length;
+      const start = new Date(startDate.split('/').reverse().join('-'));
+      const sprintPeriod = (new Date(deadline.split('/').reverse().join('-')) - start) / (1000 * 60 * 60 * 24) / newCategoryOrder.length;
       const newSprintDates = newCategoryOrder.map((_, index) => {
         const sprintStartDate = new Date(start);
         sprintStartDate.setDate(start.getDate() + index * sprintPeriod);
@@ -180,11 +234,14 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '' }) =
       });
 
       if (newSprintDates.length > 0) {
-        newSprintDates[newSprintDates.length - 1].end = new Date(deadline).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' });
+        newSprintDates[newSprintDates.length - 1].end = new Date(deadline.split('/').reverse().join('-')).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' });
       }
 
       setSprintDates(newSprintDates);
       console.log('Updated Sprint Dates:', newSprintDates);
+
+      // Store the updated sprint periods in Firestore
+      await updateDoc(projectDoc, { sprintPeriods: newSprintDates });
     } catch (error) {
       console.error('Error updating category order: ', error);
     }
@@ -206,15 +263,6 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '' }) =
   return (
     <>
       <div className='task-board'>
-        <TaskForm 
-          fetchTasks={fetchTasks} 
-          categories={categoryOrder} 
-          taskToEdit={taskToEdit} 
-          setTaskToEdit={setTaskToEdit} 
-          setCategoryOrder={setCategoryOrder} // Pass setCategoryOrder to TaskForm
-        />
-        <div>
-        </div>
         <div className='tasks-container'>
           <DragDropContext onDragEnd={handleDragEnd}>
             {categoryOrder.length > 0 && (
@@ -240,7 +288,7 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '' }) =
                               >
                                 <h3>Sprint {index + 1}: {category}</h3>
                                 <p>{sprintDates[index]?.start} - {sprintDates[index]?.end}</p>
-                                <p>Estimated Task Completion Time: {taskCompletionTimes[category]}</p>
+                                <p>max time per task: {taskCompletionTimes[category]}</p>
                                 <ul className='task-container'>
                                   {groupedTasks.incomplete[category].map((task, index) => (
                                     <TaskItem
@@ -263,7 +311,7 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '' }) =
                     </div>
                   )}
                 </Droppable>
-                <Droppable droppableId="completed-categories" direction="horizontal" type="CATEGORY">
+                <Droppable droppableId="completed-categories" direction="horizontal" type="CATEGORY" isDropDisabled={true}>
                   {(provided) => (
                     <div
                       className='status-container'
@@ -274,17 +322,18 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '' }) =
                       <div className='category-list'>
                       {categoryOrder.map((category, index) => (
                         groupedTasks.completed[category] && groupedTasks.completed[category].length > 0 && (
-                          <Draggable key={`completed-${category}`} draggableId={`completed-${category}`} index={index}>
+                          <Draggable key={`completed-${category}`} draggableId={`completed-${category}`} index={index} isDragDisabled={true}>
                             {(provided) => (
                               <div
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                                 className='category-board'
-                              >
-                                <h3>Sprint {index + 1}: {category}</h3>
-                                <p>{sprintDates[index]?.start} - {sprintDates[index]?.end}</p>
-                                <p>Estimated Task Completion Time: {taskCompletionTimes[category]}</p>
+                              > 
+                                <div>
+                                  <h3>Sprint {index + 1}: {category}</h3>
+                                  <p>{sprintDates[index]?.start} - {sprintDates[index]?.end}</p>
+                                </div>
                                 <ul className='task-container'>
                                   {groupedTasks.completed[category].map((task, index) => (
                                     <TaskItem

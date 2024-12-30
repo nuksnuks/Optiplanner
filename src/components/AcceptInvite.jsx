@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, query, where, doc, updateDoc, arrayRemove, arrayUnion } from 'firebase/firestore';
 import { db } from '../firebase';
+import { FaCheck } from "react-icons/fa";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 
 const AcceptInvite = ({ userEmail }) => {
   const [invites, setInvites] = useState([]);
@@ -36,7 +38,7 @@ const AcceptInvite = ({ userEmail }) => {
         pending: arrayRemove(userEmail),
         collaborators: arrayUnion(userEmail)
       });
-      setMessage(`You have accepted the invite to project ${projectId}.`);
+      setMessage(`You have accepted the invite.`);
       setInvites(invites.filter(invite => invite.id !== projectId));
     } catch (error) {
       console.error('Error accepting invite: ', error);
@@ -50,7 +52,7 @@ const AcceptInvite = ({ userEmail }) => {
       await updateDoc(projectDoc, {
         pending: arrayRemove(userEmail)
       });
-      setMessage(`You have declined the invite to project ${projectId}.`);
+      setMessage(`You have declined the invite.`);
       setInvites(invites.filter(invite => invite.id !== projectId));
     } catch (error) {
       console.error('Error declining invite: ', error);
@@ -61,14 +63,14 @@ const AcceptInvite = ({ userEmail }) => {
   return (
     <div>
       <h2>Pending Invites</h2>
-      {message && <p style={{ color: 'green' }}>{message}</p>}
+      {message && <p style={{ color: 'green' }}>{message} </p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <ul>
         {invites.map(invite => (
           <li key={invite.id}>
-            <p>Project: {invite.title}</p>
-            <button onClick={() => handleAcceptInvite(invite.id)}>Accept Invite</button>
-            <button onClick={() => handleDeclineInvite(invite.id)}>Decline Invite</button>
+            <p>You're invited to: {invite.title}</p>
+            <button onClick={() => handleAcceptInvite(invite.id)} className='accept-btn'>Accept <FaCheck /></button>
+            <button onClick={() => handleDeclineInvite(invite.id)} className='decline-btn'>Decline <IoMdCloseCircleOutline /></button>
           </li>
         ))}
       </ul>

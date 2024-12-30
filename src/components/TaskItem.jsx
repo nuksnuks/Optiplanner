@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TaskForm from './TaskForm';
 import TaskModal from './TaskModal';
 import { BsPencil, BsTrash3 } from "react-icons/bs";
+import '../styles/global.css'; // Import the styles
 
 const TaskItem = ({ task, handleCheckboxChange, handleDeleteTask, fetchTasks, categories }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    // Store task data in sessionStorage
+    sessionStorage.setItem(task.id, JSON.stringify({
+      label: task.name,
+      description: task.description,
+      earliestCompletion: task.earliestCompletion,
+      latestCompletion: task.latestCompletion,
+    }));
+  }, [task]);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -46,16 +57,20 @@ const TaskItem = ({ task, handleCheckboxChange, handleDeleteTask, fetchTasks, ca
           <div onClick={handleTaskClick} >
             <h4>{task.name}</h4>
             <p className='task-description'>{formatDescription(task.description)}</p>
+            <p>EST: {task.earliestCompletion}</p>
+            <p>LFT: {task.latestCompletion}</p>
           </div>
 
           <div className="task-controls">
-            <input
-              type="checkbox"
-              className='edit-button'
-              id="editButtons"
-              checked={task.done === "true"}
-              onChange={() => handleCheckboxChange(task.id, task.done)}
-            />
+            <div className='custom-checkbox'>
+              <input
+                type="checkbox"
+                id={`checkbox-${task.id}`}
+                checked={task.done === "true"}
+                onChange={() => handleCheckboxChange(task.id, task.done)}
+              />
+              <label htmlFor={`checkbox-${task.id}`}></label>
+            </div>
 
             <button 
               className="edit-button"
@@ -65,7 +80,7 @@ const TaskItem = ({ task, handleCheckboxChange, handleDeleteTask, fetchTasks, ca
             </button>
 
             <button 
-              className="edit-button"
+              className="del-task-btn"
               onClick={() => handleDeleteTask(task.id)}
             >
               <BsTrash3 />
@@ -78,7 +93,7 @@ const TaskItem = ({ task, handleCheckboxChange, handleDeleteTask, fetchTasks, ca
         onRequestClose={handleModalClose}
         task={task}
         formattedDescription={formatDescription(task.description)}
-        refreshTasks={fetchTasks} // Pass the fetchTasks function to refresh the tasks
+        refreshTasks={fetchTasks}
       />
     </>
   );

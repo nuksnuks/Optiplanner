@@ -31,8 +31,8 @@ const ProjectForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className='input-field'>
-      <h2>Create New Project</h2>
-      <label htmlFor="title">Project Title:</label>
+      <h2>New Project</h2>
+      <label htmlFor="title">Title</label>
       <input
         type="text"
         id="title"
@@ -40,7 +40,7 @@ const ProjectForm = () => {
         onChange={(e) => setTitle(e.target.value)}
         required
       />
-      <label htmlFor="startdate">Start Date:</label>
+      <label htmlFor="startdate">Kickoff</label>
       <input
         type="date"
         id="startdate"
@@ -48,7 +48,7 @@ const ProjectForm = () => {
         onChange={(e) => setStartDate(e.target.value)}
         required
       />
-      <label htmlFor="deadline">Deadline:</label>
+      <label htmlFor="deadline">Deadline</label>
       <input
         type="date"
         id="deadline"
@@ -56,7 +56,7 @@ const ProjectForm = () => {
         onChange={(e) => setDeadline(e.target.value)}
         required
       />
-      <button type="submit">Create Project</button>
+      <button type="submit" className="add-btn">Create Project</button>
     </form>
   );
 };
