@@ -9,7 +9,6 @@ import AcceptInvite from '../components/AcceptInvite';
 const Overview = () => {
   const [username, setUsername] = useState(null);
   const [user, setUser] = useState(null);
-  const [menuVisible, setMenuVisible] = useState(false);
 
   useEffect(() => {
     setUsername(localStorage.getItem('username'));
@@ -17,29 +16,27 @@ const Overview = () => {
 
   }, []);
 
-  const toggleMenu = () => {
-    setMenuVisible(!menuVisible);
-  };
-
   return (
     <>
-      <div onClick={toggleMenu} style={{ cursor: 'pointer' }}>
+      <div className="horizontal-menu">
         <h2>
           Welcome {username ? username : 'Guest'}
         </h2>
-      </div>
-      {menuVisible && (
-        <div className="horizontal-menu">
+        <div>
           <Logout />
           <DeleteAccount />
         </div>
-      )}
+      </div>
+
       <div className='overview-container'>
         <ProjectForm />
         <div className='overview-title'>
+        
+        <div className='all-projects'>
         <ProjectList user={user} />
-        <AcceptInvite userEmail={user} />
         <CollabList user={user} />
+        </div>
+        <AcceptInvite userEmail={user} />
         </div>
       </div>
     </>

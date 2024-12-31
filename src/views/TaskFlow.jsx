@@ -254,8 +254,6 @@ const TaskFlow = () => {
             nodeTypes={nodeTypes} // Register the custom node type
             edgeTypes={edgeTypes} // Register the custom edge type
           >
-            <Controls />
-            <MiniMap />
             <Background variant="dots" gap={12} size={1} />
           </ReactFlow>
           <TaskModal

@@ -39,11 +39,11 @@ const ProjectList = ({ user }) => {
   }, [user]);
 
   return (
-    <div>
+    <div className='project-list'>
       <h2>My projects</h2>
       <div className='projects'>
         {projects.map(project => (
-          <Link to={`./${project.id}`} className='project-link'>
+          <Link to={`./${project.id}`} className='project-link' key={project.id}>
             <div key={project.id} className="project-container">
               <p>
                 {project.completionPercentage}%

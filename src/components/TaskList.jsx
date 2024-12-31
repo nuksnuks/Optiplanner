@@ -245,6 +245,7 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '', set
     } catch (error) {
       console.error('Error updating category order: ', error);
     }
+    location.reload();
   };
 
   // Group tasks by category and completion status

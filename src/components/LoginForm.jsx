@@ -9,6 +9,7 @@ const LoginForm = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [errMessage, setErrMessage] = useState('please sign up to log in.');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -75,7 +76,7 @@ const LoginForm = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p style={{ color: 'red' }}>{errMessage}</p>}
         <div className='button-container'>
           <button type="submit">Login</button>
           <button type="button" onClick={handleGoogleSignIn}>Login <FcGoogle /></button>

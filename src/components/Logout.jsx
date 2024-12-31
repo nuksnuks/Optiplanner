@@ -16,9 +16,14 @@ function Logout() {
   };
 
   return (
-    <button onClick={handleLogout}>
-      <LuLogOut />
-    </button>
+    <>
+      <div className='btn-ctrl'>
+        <button onClick={handleLogout} className="back-btn">
+          <LuLogOut />
+        </button>
+      <p>Logout</p>
+      </div>
+    </>
   );
 }
 

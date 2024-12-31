@@ -65,15 +65,16 @@ const AcceptInvite = ({ userEmail }) => {
       <h2>Pending Invites</h2>
       {message && <p style={{ color: 'green' }}>{message} </p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      <ul>
+      <div>
         {invites.map(invite => (
-          <li key={invite.id}>
+          <div key={invite.id}>
             <p>You're invited to: {invite.title}</p>
+            <p>from: {invite.owner}</p>
             <button onClick={() => handleAcceptInvite(invite.id)} className='accept-btn'>Accept <FaCheck /></button>
             <button onClick={() => handleDeclineInvite(invite.id)} className='decline-btn'>Decline <IoMdCloseCircleOutline /></button>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

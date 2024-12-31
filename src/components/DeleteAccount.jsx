@@ -80,10 +80,11 @@ const DeleteAccount = () => {
   };
 
   return (
-    <div>
+    <div className='btn-ctrl'>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {message && <p style={{ color: 'green' }}>{message}</p>}
-      <button onClick={openModal}><FiUserX /></button>
+      <button onClick={openModal} className="back-btn"><FiUserX /></button>
+      <p>Delete User</p>
 
       {isModalOpen && (
         <div className="modal-overlay">
