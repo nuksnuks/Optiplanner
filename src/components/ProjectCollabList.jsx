@@ -38,22 +38,22 @@ const CollabList = ({ user }) => {
   }, [user]);
 
   return (
-    <div>
+    <div className='project-list'>
       <h2>Collaboration projects</h2>
-      <ul>
+      <div div className='projects'>
         {Collabs.map(collab => (
-          <div key={collab.id} className="project-container">
-            <Link to={`./${collab.id}`} className='project-link'>
-            <p>
-              {collab.completionPercentage}%
-            </p>
-            <p>
-            {collab.title} 
-            </p>
-            </Link>
-          </div>
+          <Link to={`./${collab.id}`} className='project-link'>
+            <div key={collab.id} className="project-container">
+              <p>
+                {collab.completionPercentage}%
+              </p>
+              <p>
+              {collab.title} 
+              </p>
+            </div>
+          </Link>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

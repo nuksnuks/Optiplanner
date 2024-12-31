@@ -121,17 +121,11 @@ const Project = () => {
   }
 
   return (
-    <>
       <div className="project-view-container">
-        <div className='project-properties'>
-
-          <div className='project-header'>
-            <button className="back-btn" onClick={handleBackClick}>
-              <IoMdArrowBack />
-            </button>
-            
-          </div>
-            
+        <div className='project-properties'> 
+          <button className="back-btn" onClick={handleBackClick}>
+            <IoMdArrowBack />
+          </button>
           <TaskForm
             fetchTasks={fetchTasks}
             categories={categories}
@@ -139,53 +133,48 @@ const Project = () => {
             setTaskToEdit={setTaskToEdit}
             setCategoryOrder={setCategoryOrder}
           />
-
-          <Link to="./taskflow">
-            The Critical Path <PiFlowArrow />
-          </Link>
+          
+          
           {project.owner === user ? <DeleteProject /> : <LeaveProject projectId={projectId} user={user} />}
         </div>
-
         <div className='main-project-content'>
-
-        <div className='project-info'>
-
-          <div className='project-settings'>
-            <EditableField
-              projectId={projectId}
-              field="title"
-              value={project.title}
-              label="Project: "
-            />
-            <EditableField
-              projectId={projectId}
-              field="startDate"
-              value={project.startDate}
-              label="Kickoff: "
-            />
-            <EditableField
-              projectId={projectId}
-              field="deadline"
-              value={project.deadline}
-              label="Deadline: "
-            />
+          <div className='project-header'>
+            <div className='project-settings'>
+              <EditableField
+                projectId={projectId}
+                field="title"
+                value={project.title}
+                label="Project: "
+              />
+              <EditableField
+                projectId={projectId}
+                field="startDate"
+                value={project.startDate}
+                label="Kickoff: "
+              />
+              <EditableField
+                projectId={projectId}
+                field="deadline"
+                value={project.deadline}
+                label="Deadline: "
+              />
+            </div>
+            <InviteUser projectId={projectId} user={user} />
+            <Link to="./taskflow">
+            The Critical Path <PiFlowArrow />
+          </Link>
           </div>
-          <InviteUser projectId={projectId} user={user} />
+          <TaskList
+            setCategories={setCategories}
+            startDate={project.startDate}
+            deadline={project.deadline}
+            setTaskToEdit={setTaskToEdit}
+            setCategoryOrder={setCategoryOrder}
+            tasks={tasks}
+            handleCheckboxChange={handleCheckboxChange}
+          />
         </div>
-
-        
-        <TaskList
-          setCategories={setCategories}
-          startDate={project.startDate}
-          deadline={project.deadline}
-          setTaskToEdit={setTaskToEdit}
-          setCategoryOrder={setCategoryOrder}
-          tasks={tasks}
-          handleCheckboxChange={handleCheckboxChange}
-        />
-        </div>
-    </div>
-    </>
+      </div>
   );
 };
 

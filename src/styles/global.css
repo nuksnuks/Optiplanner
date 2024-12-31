@@ -142,10 +142,6 @@ label {
   color: black;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-}
-
 .login{
   display: flex;
   flex-direction: column;
@@ -165,7 +161,7 @@ input {
   padding: 10px;
   border-radius: 5px;
   border: none;
-  background-color: #454545;
+  background-color: #6d6d6d;
   color: white;
 }
 
@@ -173,7 +169,8 @@ textarea {
   padding: 10px;
   border-radius: 5px;
   border: none;
-  background-color: #454545;
+  background-color: #6d6d6d;
+  color: white;
   resize: none;
 }
 
@@ -181,11 +178,19 @@ select, option {
   padding: 10px;
   border-radius: 5px;
   border: none;
-  background-color: #454545;
+  background-color: #6d6d6d;
   color: white;
 }
 option  {
   background-color: #6d6d6d;
+}
+
+.all-projects {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .project-header {
@@ -195,28 +200,29 @@ option  {
   align-items: center;
   gap: 10px;
   padding: 10px;
-  background-color: #343434;
 }
 .project-info {
   display: flex;
   flex-direction: row;
   gap: 10px;
 }
-
-.project-settings {
-  padding: 10px;
-  background-color: #343434;
+.btn-ctrl {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
 }
 
 .input-field {
   display: flex;
   flex-direction: column;
-  padding: 5px;
-  border-radius: 5px;
+  padding: 10px;
+  border-radius: 10px;
   gap: 10px;
   max-width: 20vw;
   max-height: min-content;
-  background-color: #343434;
+  background-color: #454545;
+  margin-bottom: 10px;
 }
 
 .button-container {
@@ -265,14 +271,14 @@ option  {
 
 .status-container {
   flex-direction: column;
-  width: 80vw;
   border-color: #454545;
-  
-  padding-left: 10px;
-  
+  background-color: #454545;
+  border-radius: 10px;
+  padding: 10px 10px 10px 10px;
   white-space: nowrap;
   text-overflow: ellipsis;
-  
+  margin-bottom: 10px;
+  margin-right: 10px;
   overflow-y: hidden;
 }
 
@@ -286,6 +292,7 @@ option  {
   border-radius: 100%;
   width: 50px;
   height: 50px;
+  margin: 0px 10px 12px 10px;
 }
 
 .accept-btn {
@@ -375,6 +382,15 @@ a {
   outline: none;
 }
 
+.project-list {
+  background-color: #343434;
+  padding: 10px;
+  border-radius: 10px;
+}
+.project-settings h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+
+}
 .overlay {
   position: fixed;
   top: 0;
@@ -392,8 +408,12 @@ a {
 
 .horizontal-menu {
   display: flex;
+  justify-content: space-between;
+  margin: 10px 10px;
+}
+.horizontal-menu div {
+  display: flex;
   gap: 10px;
-  margin-top: 10px;
 }
 
 button {
@@ -428,12 +448,14 @@ button {
   
 }
 .project-properties{
-  background-color: #343434;
   border: #343434;
   width: max-content;
   display: flex;
   flex-direction: column;
   padding: 10px;
+}
+.main-project-content {
+  width: 100%;
 }
 
 .invite-form {

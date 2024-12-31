@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 *.env
 database.rules.json
+
+# Firebase cache file
+.firebase/hosting.ZGlzdA.cache
