@@ -37,7 +37,7 @@ label {
 /* Hide the default checkbox */
 .custom-checkbox input[type="checkbox"] {
   display: none;
-  z-index: 0;
+  z-index: 1;
 }
 
 /* Create a custom checkbox */
@@ -54,7 +54,7 @@ label {
 /* Create the custom checkbox indicator */
 .custom-checkbox label::before {
   content: '';
-  z-index: -1;
+  z-index: 0;
   width: 18px;
   height: 18px;
   border: 2px solid #888;
@@ -70,7 +70,7 @@ label {
 .custom-checkbox input[type="checkbox"]:checked + label::before {
   background-color: forestgreen;
   border-color: green;
-  z-index: -1;
+  z-index: 0;
 }
 
 /* Add a checkmark when checked */
@@ -84,7 +84,7 @@ label {
   left: 6px;
   top: 50%;
   transform: translateY(-50%) rotate(45deg);
-  z-index: -1; 
+  z-index: 0; 
 }
 
 .modal-overlay {
@@ -97,7 +97,7 @@ label {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2;
+  z-index: 3;
 }
 
 .modal-content {
