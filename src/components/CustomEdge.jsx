@@ -24,12 +24,22 @@ const CustomEdge = ({
   const edgeColor = data.done === 'true' ? 'green' : 'red';
 
   return (
-    <path
-      id={id}
-      style={{ ...style, stroke: edgeColor }}
-      className="react-flow__edge-path"
-      d={edgePath}
-    />
+    <>
+      {/* Invisible hitbox path */}
+      <path
+        id={`${id}-hitbox`}
+        style={{ ...style, stroke: 'transparent', strokeWidth: 10 }}
+        className="react-flow__edge-path"
+        d={edgePath}
+      />
+      {/* Visible path */}
+      <path
+        id={id}
+        style={{ ...style, stroke: edgeColor, strokeWidth: 2 }}
+        className="react-flow__edge-path"
+        d={edgePath}
+      />
+    </>
   );
 };
 

@@ -2,12 +2,14 @@ import React from 'react';
 import { Handle } from '@xyflow/react';
 
 const CustomNode = ({ data }) => {
-  console.log(data);
   return (
     <div style={{ padding: 20, minWidth: 100, border: '1px solid #ddd', borderRadius: 5, background: '#343434', position: 'relative' }}>
       <Handle type="target" position="left" style={{ background: '#555' }} />
       <div style={{ position: 'absolute', top: 5, left: 5, fontSize: '0.8em', color: '#fff' }}>
         {data.earliestCompletion}
+      </div>
+      <div style={{ textAlign: 'center', color: '#fff' }}>
+        {data.category}
       </div>
       <div style={{ textAlign: 'center', color: '#fff' }}>
         {data.label}

@@ -26,7 +26,7 @@ const TaskForm = ({ fetchTasks, categories = [], taskToEdit, setTaskToEdit, setC
       e.preventDefault();
       setTaskDescription((prev) => prev + '\n');
     }
-    console.log('Key pressed:', JSON.stringify(taskDescription));
+
   };
 
   const handleSubmit = async (e) => {
@@ -61,7 +61,7 @@ const TaskForm = ({ fetchTasks, categories = [], taskToEdit, setTaskToEdit, setC
           await updateDoc(projectDoc, { categoryOrder: newCategoryOrder });
         }
       }
-      console.log('Task submitted');
+
       setTaskName('');
       setTaskDescription('');
       setTaskCategory('');

@@ -39,7 +39,7 @@ const TaskModal = ({ isOpen, onRequestClose, task, refreshTasks }) => {
       <p><strong>Category:</strong> {task.category}</p>
       <p><strong>Status:</strong> {task.done === "true" ? "Completed" : "Incomplete"}</p>
       <label>
-        {task.done === "true" ? "Incomplete" : "Completed"}
+        {task.done === "true" ? "Completed" : "Incomplete"}
         <input
           type="checkbox"
           checked={task.done === "true"}

@@ -20,12 +20,12 @@ function SignUp() {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log('User signed up:', user.email);
+
 
         sendEmailVerification(user)
           .then(() => {
             setMessage('Verification email sent. Please check your inbox.');
-            console.log('Verification email sent to:', user.email);
+            
           })
           .catch((error) => {
             console.error('Error sending verification email:', error);
@@ -34,7 +34,7 @@ function SignUp() {
 
         localStorage.setItem('user', user.email);
         useAuthStore.setState({ isAuthenticated: true });
-        console.log('User Login state:', useAuthStore.getState().isAuthenticated);
+        
         navigate('/overview');
       })
       .catch((error) => {
@@ -52,7 +52,7 @@ function SignUp() {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      console.log('User signed in with Google:', user.email);
+     
 
       // Check if the user exists in the database
       const userDoc = await getDoc(doc(db, 'users', user.uid));
@@ -62,12 +62,12 @@ function SignUp() {
           email: user.email,
           createdAt: new Date(),
         });
-        console.log('User registered in the database:', user.email);
+
       }
 
       localStorage.setItem('user', user.email);
       useAuthStore.setState({ isAuthenticated: true });
-      console.log('User Login state:', useAuthStore.getState().isAuthenticated);
+      
       navigate('/overview');
     } catch (error) {
       const errorCode = error.code;

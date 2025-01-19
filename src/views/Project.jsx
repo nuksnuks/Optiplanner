@@ -16,7 +16,6 @@ import { PiFlowArrow } from "react-icons/pi";
 const Project = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
-  console.log(projectId);
 
   const [project, setProject] = useState(null);
   const [isEditing, setIsEditing] = useState({
@@ -40,10 +39,10 @@ const Project = () => {
           if (projectData.owner.includes(user) || projectData.collaborators.includes(user)) {
             setProject(projectData);
           } else {
-            console.log('User is not a collaborator on this project.');
+           
           }
         } else {
-          console.log('No such document!');
+   
         }
       } catch (error) {
         console.error('Error fetching project:', error);
@@ -80,7 +79,6 @@ const Project = () => {
   const handleCheckboxChange = async (taskId, currentStatus) => {
     try {
       const taskDoc = doc(db, 'projects', projectId, 'tasks', taskId);
-      console.log(`Updating task: ${taskId} in project: ${projectId}`);
       await updateDoc(taskDoc, { done: currentStatus === "true" ? "false" : "true" });
       setTasks(prevTasks =>
         prevTasks.map(task =>

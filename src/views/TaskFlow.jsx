@@ -135,10 +135,10 @@ const TaskFlow = () => {
             }));
           }
         } else {
-          console.log('User is not a collaborator on this project.');
+         
         }
       } else {
-        console.log('No such document!');
+       
       }
     } catch (error) {
       console.error('Error fetching tasks: ', error);
@@ -147,13 +147,12 @@ const TaskFlow = () => {
 
   useEffect(() => {
     fetchTasks();
-    console.log('Fetching tasks...', user);
+   
   }, [projectId, user]);
 
   const handleCheckboxChange = async (taskId, currentStatus) => {
     try {
       const taskDoc = doc(db, 'projects', projectId, 'tasks', taskId);
-      console.log(`Updating task: ${taskId} in project: ${projectId}`);
       await updateDoc(taskDoc, { done: currentStatus === "true" ? "false" : "true" });
       setTasks(prevTasks =>
         prevTasks.map(task =>

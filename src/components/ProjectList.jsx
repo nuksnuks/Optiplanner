@@ -27,7 +27,7 @@ const ProjectList = ({ user }) => {
           };
         }));
         setProjects(projectsList);
-        console.log('Projects: ', projectsList);
+     
       } catch (error) {
         console.error('Error fetching projects: ', error);
       }

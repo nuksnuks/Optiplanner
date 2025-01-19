@@ -14,7 +14,6 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '', set
   const [taskCompletionTimes, setTaskCompletionTimes] = useState({});
 
   const fetchTasks = async () => {
-    console.log('the startDate is:', startDate); 
 
     try {
       const projectDoc = doc(db, 'projects', projectId);
@@ -58,15 +57,14 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '', set
           // Calculate project period
           const start = new Date(startDate.split('/').reverse().join('-'));
           const end = new Date(deadline.split('/').reverse().join('-'));
-          console.log('Start Date:', start);
-          console.log('Deadline:', end);
+
 
           const projectPeriod = (end - start) / (1000 * 60 * 60 * 24); // Convert milliseconds to days
-          console.log('Project Period (days):', projectPeriod);
+       
 
           // Calculate sprint period
           const sprintPeriod = projectPeriod / initialCategoryOrder.length;
-          console.log('Sprint Period (days):', sprintPeriod);
+        
 
           // Calculate sprint start and end dates
           const sprintDates = initialCategoryOrder.map((_, index) => {
@@ -86,7 +84,6 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '', set
           }
 
           setSprintDates(sprintDates);
-          console.log('Sprint Dates:', sprintDates);
 
           // Calculate estimated task completion time for each category
           const taskCompletionTimes = {};
@@ -106,7 +103,6 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '', set
           });
 
           setTaskCompletionTimes(taskCompletionTimes);
-          console.log('Task Completion Times:', taskCompletionTimes);
 
           // Calculate earliest and latest completion times for each task
           const tasksWithCompletionTimes = tasksList.map(task => {
@@ -138,10 +134,10 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '', set
             });
           }
         } else {
-          console.log('User is not a collaborator on this project.');
+
         }
       } else {
-        console.log('No such document!');
+     
       }
     } catch (error) {
       console.error('Error fetching tasks: ', error);
@@ -159,14 +155,13 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '', set
       // Save the updated category order to Firestore
       const projectDoc = doc(db, 'projects', projectId);
       updateDoc(projectDoc, { categoryOrder: updatedCategoryOrder })
-        .then(() => console.log('Category order updated in Firestore'))
-        .catch(error => console.error('Error updating category order: ', error));
+      .catch(error => console.error('Error updating category order: ', error));
     }
   };
 
   useEffect(() => {
     fetchTasks();
-    console.log('Fetching tasks...', userEmail);
+
   }, [projectId, userEmail]);
 
   useEffect(() => {
@@ -176,7 +171,7 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '', set
   const handleCheckboxChange = async (taskId, currentStatus) => {
     try {
       const taskDoc = doc(db, 'projects', projectId, 'tasks', taskId);
-      console.log(`Updating task: ${taskId} in project: ${projectId}`);
+
       await updateDoc(taskDoc, { done: currentStatus === "true" ? "false" : "true" });
       setTasks(prevTasks =>
         prevTasks.map(task =>
@@ -196,7 +191,6 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '', set
 
     try {
       const taskDoc = doc(db, 'projects', projectId, 'tasks', taskId);
-      console.log(`Deleting task: ${taskId} in project: ${projectId}`);
       await deleteDoc(taskDoc);
       setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
     } catch (error) {
@@ -238,7 +232,7 @@ const TaskList = ({ setCategories = () => {}, startDate = '', deadline = '', set
       }
 
       setSprintDates(newSprintDates);
-      console.log('Updated Sprint Dates:', newSprintDates);
+ 
 
       // Store the updated sprint periods in Firestore
       await updateDoc(projectDoc, { sprintPeriods: newSprintDates });

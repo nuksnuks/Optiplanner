@@ -18,10 +18,10 @@ const LoginForm = () => {
     signInWithEmailAndPassword(auth, login, password)
       .then((userCredential) => {
         // Signed in 
-        console.log('User signed in:', userCredential.user.email);
+
         const user = userCredential.user.email;
         useAuthStore.setState({ isAuthenticated: true });
-        console.log('User Login state:', useAuthStore.getState().isAuthenticated);
+        
         navigate('/overview');
         localStorage.setItem('user', user);
       })
@@ -41,7 +41,6 @@ const LoginForm = () => {
       .then((result) => {
         const user = result.user;
         useAuthStore.setState({ isAuthenticated: true });
-        console.log('User Login state:', useAuthStore.getState().isAuthenticated);
         localStorage.setItem('username', user.displayName);
         localStorage.setItem('user', user.email);
         navigate('/overview');

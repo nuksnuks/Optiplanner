@@ -29,9 +29,6 @@ const DeleteProject = () => {
       const projectData = projectDoc.data();
       const ownerEmail = projectData.owner;
 
-      console.log('Owner email:', ownerEmail);
-      console.log('Password:', password);
-
       // Check if the user signed in with Google
       if (user.providerData.some(provider => provider.providerId === 'google.com')) {
         const provider = new GoogleAuthProvider();

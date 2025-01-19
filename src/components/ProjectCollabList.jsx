@@ -26,7 +26,6 @@ const CollabList = ({ user }) => {
           };
         }));
         setCollabs(collabList);
-        console.log('collaborated projects: ', collabList);
       } catch (error) {
         console.error('Error fetching projects: ', error);
       }
@@ -40,9 +39,9 @@ const CollabList = ({ user }) => {
   return (
     <div className='project-list'>
       <h2>Collaboration projects</h2>
-      <div div className='projects'>
+      <div className='projects'>
         {Collabs.map(collab => (
-          <Link to={`./${collab.id}`} className='project-link'>
+          <Link to={`./${collab.id}`} className='project-link' key={collab.id}>
             <div key={collab.id} className="project-container">
               <p>
                 {collab.completionPercentage}%

@@ -12,7 +12,7 @@ const ProjectForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const user = localStorage.getItem('user');
-    console.log('User:', user);
+   
     try {
       await addDoc(collection(db, 'projects'), {
         title: title,
